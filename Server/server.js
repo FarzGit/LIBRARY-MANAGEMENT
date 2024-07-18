@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import userRouter from './routes/userRouter.js';
+import adminRouter from './routes/adminRoute.js';
 dotenv.config()
 connectDB()
 
@@ -15,6 +16,8 @@ app.use(express.urlencoded({extended:true}))
 
 
 app.use('/api/users',userRouter)
+app.use('/api/admin',adminRouter)
+
 
 
 

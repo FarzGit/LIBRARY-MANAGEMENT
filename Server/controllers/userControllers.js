@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
-
+import Book from '../models/booksModel.js';
+import Request from '../models/requestModel.js';
 
 
 
@@ -40,7 +41,6 @@ const register = async (req, res) => {// This function is used to register the n
 
 
 const loginUser = async (req, res) => { // This function is used to login the existing user 
-
     try {
         const { email, password } = req.body
         let user = await User.findOne({ email })
@@ -72,9 +72,67 @@ const loginUser = async (req, res) => { // This function is used to login the ex
 }
 
 
+const borrowBook = async (req, res) => { // This function is used to send a request to admin to borrow the book
+    try {
+        const { id } = req.query;  
+        const userId = '6698e11af178e6656e9b5498';  
+        let book = await Book.findById(id);
+        if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+        }
+        if (book.status === 'unavailable') {
+            return res.status(400).json({ message: 'Book is not available for borrowing' });
+        }
+
+
+        const newRequestData  = {
+            user: userId,
+            bookId: book._id,
+            bookTitle: book.title,
+            bookAuthor: book.author,
+        };
+        const newRequest = new Request(newRequestData);
+        await newRequest.save();
+
+        book.copies -= 1;
+        await book.save();
+        res.json({ message: 'Request to borrow book sent successfully', book });
+    } catch (error) {
+        console.log(error.message);
+        res.status(500).json({ message: 'Server error' });
+    }
+}
+
+
+const returnBook = async(req,res)=>{ // This is the function for return the book from user hand
+    try {
+        const { id } = req.query;  
+        const userId = '6698e11af178e6656e9b5498';
+        const request = await Request.findOne({ _id: requestId, user: userId });
+        if (!request) {
+            return res.status(404).json({ message: 'Borrow request not found' });
+        }
+        const book = await Book.findById(request.bookId);
+        if (!book) {
+            return res.status(404).json({ message: 'Book not found' });
+        }
+        await Request.findByIdAndDelete(id);
+        book.copies += 1;
+        await book.save();
+        res.json({ message: 'Book returned successfully', book });
+        
+    } catch (error) {
+        console.log(error)
+        
+    }
+}
+
+
 
 
 export {
     register,
-    loginUser
+    loginUser,
+    borrowBook,
+    returnBook
 }
