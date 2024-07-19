@@ -1,19 +1,30 @@
 
 import Book from '../models/booksModel.js';
 import Request from '../models/requestModel.js';
+import Admin from '../models/adminModel.js';
+import jwt from 'jsonwebtoken'
 
 const postBooks = async (req, res) => { // This is the function for posting new book data
 
 
     try {
         const { title, author, copies } = req.body;
+        console.log(title,author,copies);
         const newBook = new Book({
             title,
             author,
             copies
         });
+
+        const existingBook = await Book.findOne({ title });
+        if (existingBook) {
+            return res.status(400).json({ message: 'This Book already exists' });
+        }
+
+
+
         const book = await newBook.save();
-        res.json(book);
+        res.status(201).json({ book, message: 'Successfully New Book Added' });
     } catch (error) {
         console.log(error)
         res.status(500).json({ message: 'server error' });
@@ -119,11 +130,47 @@ const acceptRequest = async(req,res)=>{ // This function is used for accept the 
 
 
 
+const adminLogin = async(req,res)=>{ // This function is login admin with credentials 
+
+    try {
+        const { email, password } = req.body
+        let admin = await Admin.findOne({ email })
+        if (!admin) {
+            return res.status(400).json({ message: 'Invalid Credentials' })
+        }
+        const isMatch = await admin.matchPassword(password);
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Invalid Credentials' })
+        }
+        const payload = { // Here setting the user in to payload
+            admin: {
+                id: admin.id,
+            },
+        };
+        jwt.sign(
+            payload,
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' },
+            (err, token) => {
+                if (err) throw err;
+                res.json({ token,message:'Login Successfully' });
+            }
+        );
+    } catch (error) {
+
+        console.log(error)
+        
+    }
+}
+
+
+
 export {
     postBooks,
     getBooks,
     updateBooks,
     deleteBooks,
     getBookRequests,
-    acceptRequest
+    acceptRequest,
+    adminLogin
 }

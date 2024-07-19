@@ -1,14 +1,18 @@
-import { Link, useNavigate } from "react-router-dom";
-import { LoginValidation } from "../../validations/yupValidation";
+
+import { LoginValidation } from "../../validations/yupValidation"
 import { useFormik } from "formik";
-import { toast } from 'react-toastify';
+import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import axios from 'axios';
-import { setCredentials } from "../../redux/authSlice";
+import { toast } from "react-toastify";
+import { setAdminCredentials } from "../../redux/adminAuthSlice";
+import axios from "axios";
 
-const BASE_URL = 'http://localhost:5000/api/users';
 
-const LoginForm = () => {
+
+const BASE_URL = 'http://localhost:5000/api/admin';
+
+const AdminLoginForm = () => {
+
     const initialValues = {
         email: '',
         password: ''
@@ -25,10 +29,12 @@ const LoginForm = () => {
                 const { email, password } = values;
                 const response = await axios.post(`${BASE_URL}/login`, { email, password });
                 const { token } = response.data;
-                const { user } = JSON.parse(atob(token.split('.')[1]));
-                dispatch(setCredentials({ token, userId: user.id }));
+                const { admin } = JSON.parse(atob(token.split('.')[1]));
+                console.log(token)
+                console.log(admin)
+                dispatch(setAdminCredentials({ token, adminId: admin.id }));
                 toast.success('Login successful');
-                navigate('/')
+                navigate('/admin')
             } catch (error) {
                 console.log(error);
                 if (error.response && error.response.data) {
@@ -36,14 +42,21 @@ const LoginForm = () => {
                 } else {
                     toast.error('An unexpected error occurred,try again later');
                 }
+                
             }
         }
     });
 
+
+
+  return (
+    <>
+     
+
     return (
         <div className="border border-[#692a2a] p-3 bg-[#423627] bg-opacity-70 w-[30%] rounded-xl">
             <div className="pb-4 flex justify-center">
-                <h3 className="text-white font-bold text-2xl">USER LOGIN</h3>
+                <h3 className="text-white font-bold text-2xl">ADMIN LOGIN</h3>
             </div>
             <form onSubmit={handleSubmit}>
                 <span className="text-[15px] p-1 text-white">Email</span>
@@ -74,13 +87,11 @@ const LoginForm = () => {
                     <button type="submit" className="bg-black rounded-md h-[40px] w-[110px] text-white">SignIn</button>
                 </div>
             </form>
-            <div className="flex justify-center text-[13px] pt-2">
-                <span className="text-white">
-                    Don’t have an account? <Link to="/register" className="text-blue-500 cursor-pointer">SignUp</Link>
-                </span>
-            </div>
-        </div>
+                    </div>
     );
-};
+    
+    </>
+  )
+}
 
-export default LoginForm;
+export default AdminLoginForm

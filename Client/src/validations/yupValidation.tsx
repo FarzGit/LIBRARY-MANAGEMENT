@@ -40,3 +40,23 @@ export const LoginValidation = Yup.object({
 });
 
 
+export const AddBooksValidation = Yup.object({
+
+    title: Yup.string()
+        .min(3)
+        .max(30)
+        .matches(/^[^\s]+(\s[^\s]+)*$/, "Name cannot have adjacent spaces")
+        .required("Please enter title"),
+
+    author: Yup.string()
+        .min(3)
+        .max(30)
+        .matches(/^[^\s]+(\s[^\s]+)*$/, "Name cannot have adjacent spaces")
+        .required("Please enter author"),
+
+    copies: Yup.number()
+        .positive("Number of copies must be greater than 0")
+        .required("Please enter number of copies")
+})
+
+
