@@ -1,6 +1,6 @@
 import express from 'express'
 const adminRouter = express.Router()
-import { postBooks,getBooks, updateBooks, deleteBooks, getBookRequests, acceptRequest, adminLogin, getUsers } from '../controllers/adminControllers.js'
+import { postBooks,getBooks, updateBooks, deleteBooks, getBookRequests, acceptRequest, adminLogin, getUsers, rejectRequest } from '../controllers/adminControllers.js'
 
 
 adminRouter.post('/books',postBooks) // This is the endpoint for posting new books data 
@@ -11,6 +11,8 @@ adminRouter.get('/request',getBookRequests) // This is the endpoint for get the 
 adminRouter.put('/accept-request',acceptRequest) // This is the endpoint for accept the boorow request from admin side
 adminRouter.post('/login',adminLogin) // This is the endpoint for login the admin
 adminRouter.get('/users',getUsers) // This is the endpoint for the exixting user in the database
+adminRouter.put('/reject-request',rejectRequest) // This is the endpoint for reject the boorow request from admin side
+
 
 
 

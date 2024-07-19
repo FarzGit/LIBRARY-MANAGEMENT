@@ -43,6 +43,20 @@ const Request = () => {
             }
         }
 
+
+        const handleRejectButton = async(id)=>{
+
+            try {
+                const response = await axios.put(`http://localhost:5000/api/admin/reject-request?id=${id}`);
+            if(response){
+                toast.success(response.data.message)
+            }
+            } catch (error) {
+                console.log(error);
+                toast.error(error.response.data.message)
+
+            }
+        }
     return (
         <>
             <TableContainer component={Paper}>
@@ -73,7 +87,7 @@ const Request = () => {
                                     {row.status === 'accepted' ? (
                                         <AcceptedButton />
                                     ) : (
-                                        <RequestHandleButton onAccept={()=>handleAcceptButton(row._id)} />
+                                        <RequestHandleButton onAccept={()=>handleAcceptButton(row._id)} onReject={()=>handleRejectButton(row._id)} />
                                     )}
 
                                 </TableCell>

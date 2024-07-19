@@ -11,7 +11,7 @@ const postBooks = async (req, res) => { // This is the function for posting new 
 
     try {
         const { title, author, copies } = req.body;
-        console.log(title,author,copies);
+        console.log(title, author, copies);
         const newBook = new Book({
             title,
             author,
@@ -48,17 +48,17 @@ const getBooks = async (req, res) => {// This is the fuction is used for getting
 const updateBooks = async (req, res) => { // This function for updating the books
     try {
         const { title, author, copies } = req.body;
-        const {id} = req.query
+        const { id } = req.query
         const bookFields = {};
         if (title) bookFields.title = title;
         if (author) bookFields.author = author;
         if (copies) bookFields.copies = copies;
 
         let book = await Book.findById(id);
-        if (!book){
+        if (!book) {
             return res.status(404).json({ message: 'Book not found' });
-            
-        } 
+
+        }
         book = await Book.findByIdAndUpdate(
             id,
             { $set: bookFields }
@@ -66,40 +66,40 @@ const updateBooks = async (req, res) => { // This function for updating the book
         res.json(book);
     } catch (error) {
         console.log(error)
-        res.status(500).json({message:'something went wrong when updating the book'});
+        res.status(500).json({ message: 'something went wrong when updating the book' });
     }
 }
 
 
 
-const deleteBooks = async(req,res)=>{// This is the function that is used for deleting the existing book from database
+const deleteBooks = async (req, res) => {// This is the function that is used for deleting the existing book from database
     try {
-        const {id} = req.query
+        const { id } = req.query
         let book = await Book.findById(id);
-        if(!book){
+        if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
         const isDeleted = await Book.findByIdAndDelete(id);
-        if(isDeleted){
+        if (isDeleted) {
             res.status(201).json({ message: 'Book Deleted Succesfully' });
         }
-        
+
     } catch (error) {
         console.log(error)
-        res.status(500).json({message:'something went wrong server'})
-        
+        res.status(500).json({ message: 'something went wrong server' })
+
     }
 }
 
 
 
-const getBookRequests = async(req,res)=>{ // This is the function for getting all the request that come from user to admin
-    try{
+const getBookRequests = async (req, res) => { // This is the function for getting all the request that come from user to admin
+    try {
         const requests = await Request.find()
-        if(requests){
+        if (requests) {
             res.json(requests)
         }
-    }catch(error){
+    } catch (error) {
         console.log(error)
     }
 }
@@ -107,39 +107,55 @@ const getBookRequests = async(req,res)=>{ // This is the function for getting al
 
 
 
-const acceptRequest = async(req,res)=>{ // This function is used for accept the incomming reqest from user
-    try{
-
-        const {id} = req.query
-
+const acceptRequest = async (req, res) => { // This function is used for accept the incomming reqest from user
+    try {
+        const { id } = req.query
         const alreadyAccepted = await Request.findById(id)
-
-        if(alreadyAccepted.status === 'accepted'){
+        if (alreadyAccepted.status === 'accepted') {
             return res.status(400).json({ message: 'Already accepted this Book' });
-
         }
-
         const updatedRequest = await Request.findByIdAndUpdate(
             id,
             { status: 'accepted' },
             { runValidators: true }
         );
-
         if (updatedRequest) {
             res.json({ message: 'Request accepted successfully' });
         }
 
-        
-
-    }catch(error){
+    } catch (error) {
         console.log(error);
         res.status(500).json({ message: 'something went wrong server' });
     }
 }
 
 
+const rejectRequest = async (req, res) => { // This function is used for rejecting the incoming request from user
+    try {
+        const { id } = req.query;
+        const request = await Request.findById(id);
+        if (request.status === 'rejected') {
+            return res.status(400).json({ message: 'Request already rejected' });
+        }
+        const updatedRequest = await Request.findByIdAndUpdate(
+            id,
+            { status: 'rejected' },
+            { runValidators: true }
+        );
+        if (updatedRequest) {
+            res.json({ message: 'Request rejected successfully' });
+        }
+        await Request.deleteOne({ _id: id })
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: 'Something went wrong on the server' });
+    }
+}
 
-const adminLogin = async(req,res)=>{ // This function is login admin with credentials 
+
+
+
+const adminLogin = async (req, res) => { // This function is login admin with credentials 
 
     try {
         const { email, password } = req.body
@@ -159,20 +175,20 @@ const adminLogin = async(req,res)=>{ // This function is login admin with creden
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' },
+            { expiresIn: '5h' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token,message:'Login Successfully' });
+                res.json({ token, message: 'Login Successfully' });
             }
         );
     } catch (error) {
         console.log(error)
-        res.status(500).json({message:'Something went wrong'});
+        res.status(500).json({ message: 'Something went wrong' });
     }
 }
 
 
-const getUsers = async(req,res)=>{ // This is the function for getting users list in the DB
+const getUsers = async (req, res) => { // This is the function for getting users list in the DB
     try {
         const users = await User.find().select('-password');
         res.status(200).json(users);
@@ -191,6 +207,7 @@ export {
     deleteBooks,
     getBookRequests,
     acceptRequest,
+    rejectRequest,
     adminLogin,
     getUsers
 }

@@ -3,10 +3,15 @@ import { TiTick } from "react-icons/ti";
 import { ImCross } from "react-icons/im";
 
 
-const RequestHandleButton = ({onAccept}) => {
+const RequestHandleButton = ({onAccept,onReject}) => {
     const handleAcceptClick = () => {
         if (window.confirm("Are you sure you want to Accept this book?")) {
             onAccept();
+        }
+    };
+    const handleRejectClick = () => {
+        if (window.confirm("Are you sure you want to Reject this book?")) {
+            onReject();
         }
     };
     return (
@@ -18,7 +23,7 @@ const RequestHandleButton = ({onAccept}) => {
                         <TiTick size={40} />
                     </span>
                 </div>
-                <div className="bg-[#fc5656] rounded-lg p-2 cursor-pointer">
+                <div className="bg-[#fc5656] rounded-lg p-2 cursor-pointer" onClick={handleRejectClick}>
                     <span>
                         <ImCross size={30} />
 

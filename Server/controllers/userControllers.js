@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import Book from '../models/booksModel.js';
 import Request from '../models/requestModel.js';
-
+import mongoose from 'mongoose';
 
 
 const register = async (req, res) => {// This function is used to register the new user 
@@ -28,7 +28,7 @@ const register = async (req, res) => {// This function is used to register the n
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' },
+            { expiresIn: '8h' },
             (err, token) => {
                 if (err) throw err;
                 res.json({ token,message:'Registration successfull' });
@@ -61,7 +61,7 @@ const loginUser = async (req, res) => { // This function is used to login the ex
         jwt.sign(
             payload,
             process.env.JWT_SECRET,
-            { expiresIn: '1h' },
+            { expiresIn: '8h' },
             (err, token) => {
                 if (err) throw err;
                 res.json({ token });
@@ -120,16 +120,17 @@ const borrowBook = async (req, res) => { // This function is used to send a requ
 const returnBook = async(req,res)=>{ // This is the function for return the book from user hand
     try {
         const { id } = req.query;  
-        const userId = '6698e11af178e6656e9b5498';
-        const request = await Request.findOne({ _id: requestId, user: userId });
+        const userId = req.user.id;
+        const request = await Request.findOne({ bookId: id, user: userId });
         if (!request) {
-            return res.status(404).json({ message: 'Borrow request not found' });
+            return res.status(404).json({ message: 'Please relogin and check it' });
         }
         const book = await Book.findById(request.bookId);
         if (!book) {
             return res.status(404).json({ message: 'Book not found' });
         }
-        await Request.findByIdAndDelete(id);
+
+        await Request.deleteOne({bookId:id})
         book.copies += 1;
         await book.save();
         res.json({ message: 'Book returned successfully', book });
@@ -142,10 +143,28 @@ const returnBook = async(req,res)=>{ // This is the function for return the book
 
 
 
+const getIssuedBooks = async(req,res)=>{
+
+    try {
+        const userId = req.user.id
+        const requests = await Request.find({
+            user: userId,
+            status: 'accepted'
+        })
+
+        res.status(200).json(requests);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+
 
 export {
     register,
     loginUser,
     borrowBook,
-    returnBook
+    returnBook,
+    getIssuedBooks
 }
