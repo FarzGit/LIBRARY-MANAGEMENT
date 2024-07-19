@@ -8,7 +8,9 @@ import Request from '../models/requestModel.js';
 const register = async (req, res) => {// This function is used to register the new user 
     try {
         const { name, email, password } = req.body
+        console.log(name,email,password)
         let user = await User.findOne({ email })
+        console.log(user)
         if (user) {
             return res.status(400).json({ message: 'User already exists' });
         }
@@ -29,7 +31,7 @@ const register = async (req, res) => {// This function is used to register the n
             { expiresIn: '1h' },
             (err, token) => {
                 if (err) throw err;
-                res.json({ token });
+                res.json({ token,message:'Registration successfull' });
             }
         );
     } catch (error) {
