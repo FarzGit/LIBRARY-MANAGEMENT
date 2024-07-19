@@ -77,28 +77,39 @@ const loginUser = async (req, res) => { // This function is used to login the ex
 const borrowBook = async (req, res) => { // This function is used to send a request to admin to borrow the book
     try {
         const { id } = req.query;  
-        const userId = '6698e11af178e6656e9b5498';  
-        let book = await Book.findById(id);
-        if (!book) {
-            return res.status(404).json({ message: 'Book not found' });
+        const userId = req.user.id;  
+        if(userId){
+
+            let book = await Book.findById(id);
+            if (!book) {
+                return res.status(404).json({ message: 'Book not found' });
+            }
+            if (book.status === 'unavailable') {
+                return res.status(400).json({ message: 'Book is not available for borrowing' });
+            }
+    
+            const existingRequest = await Request.findOne({ user: userId, bookId: id });
+            if (existingRequest) {
+                return res.status(400).json({ message: 'You have already requested to  this book' });
+            }
+    
+            const user = await User.findById(userId);
+            const newRequestData  = {
+                user: userId,
+                bookId: book._id,
+                bookTitle: book.title,
+                bookAuthor: book.author,
+                userEmail: user.email,
+            };
+            const newRequest = new Request(newRequestData);
+            await newRequest.save();
+    
+            book.copies -= 1;
+            await book.save();
+            res.json({ message: 'Request sent successfully', book });
+        }else{
+            res.status(400).json({message:'User not exit please Login '})
         }
-        if (book.status === 'unavailable') {
-            return res.status(400).json({ message: 'Book is not available for borrowing' });
-        }
-
-
-        const newRequestData  = {
-            user: userId,
-            bookId: book._id,
-            bookTitle: book.title,
-            bookAuthor: book.author,
-        };
-        const newRequest = new Request(newRequestData);
-        await newRequest.save();
-
-        book.copies -= 1;
-        await book.save();
-        res.json({ message: 'Request to borrow book sent successfully', book });
     } catch (error) {
         console.log(error.message);
         res.status(500).json({ message: 'Server error' });

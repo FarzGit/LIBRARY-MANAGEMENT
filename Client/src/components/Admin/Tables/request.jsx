@@ -1,11 +1,15 @@
+
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
-import ActionsButton from "../Buttons/actionsButton";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import api from "../../utils/authorization";
+import RequestHandleButton from "../../Buttons/requestHandleButton";
+import AcceptedButton from "../../Buttons/acceptedButton";
 import { toast } from "react-toastify";
 
-const BooksTable = () => {
+
+
+const Request = () => {
+
 
     const [rows, setRows] = useState([]);
 
@@ -13,10 +17,11 @@ const BooksTable = () => {
 
         const fetchData = async () => {
             try {
-                const response = await axios.get("http://localhost:5000/api/admin/books")
+                const response = await axios.get("http://localhost:5000/api/admin/request")
                 setRows(response.data);
             } catch (error) {
                 console.log(error);
+                
             }
         }
         fetchData()
@@ -24,28 +29,19 @@ const BooksTable = () => {
 
     }, []);
 
-    console.log(rows)
+        const handleAcceptButton = async(id)=>{
 
-
-    const handleBorrow = async(id)=>{
-
-        try {
-
-            const response = await api.post(`/request?id=${id}`)
-            console.log(response);
+            try {
+                const response = await axios.put(`http://localhost:5000/api/admin/accept-request?id=${id}`);
             if(response){
-                toast.success(response.data.message)        
+                toast.success(response.data.message)
             }
-            
-        } catch (error) {
-            console.log(error);
-            toast.error(error.response.data.message)
+            } catch (error) {
+                console.log(error);
+                toast.error(error.response.data.message)
+
+            }
         }
-
-    }
-
-
-
 
     return (
         <>
@@ -54,11 +50,11 @@ const BooksTable = () => {
                     <TableHead>
                         <TableRow>
                             <TableCell>Sl.no</TableCell>
-                            <TableCell align="right">Title</TableCell>
+                            <TableCell align="right">User Email</TableCell>
+                            <TableCell align="right">Book</TableCell>
                             <TableCell align="right">Author</TableCell>
-                            <TableCell align="right">Copies</TableCell>
-                            <TableCell align="right">Status</TableCell>
                             <TableCell align="right">Actions</TableCell>
+
                         </TableRow>
                     </TableHead>
                     <TableBody>
@@ -70,17 +66,18 @@ const BooksTable = () => {
                                 <TableCell component="th" scope="row">
                                     {index + 1}
                                 </TableCell>
-                                <TableCell align="right">{row.title}</TableCell>
-                                <TableCell align="right">{row.author}</TableCell>
-                                <TableCell align="right">{row.copies}</TableCell>
-                                <TableCell align="right">{row.status}</TableCell>
+                                <TableCell align="right">{row.userEmail}</TableCell>
+                                <TableCell align="right">{row.bookTitle}</TableCell>
+                                <TableCell align="right">{row.bookAuthor}</TableCell>
                                 <TableCell align="right">
-                                    {row.status === "Available" ? (
-                                        <ActionsButton color="bg-[#657de7]" label="Borrow" onBorrow={() => handleBorrow(row._id)} />
+                                    {row.status === 'accepted' ? (
+                                        <AcceptedButton />
                                     ) : (
-                                        <ActionsButton color="bg-gray-400" label="Out of Stock" />
+                                        <RequestHandleButton onAccept={()=>handleAcceptButton(row._id)} />
                                     )}
+
                                 </TableCell>
+
                             </TableRow>
                         ))}
                     </TableBody>
@@ -91,4 +88,4 @@ const BooksTable = () => {
     )
 }
 
-export default BooksTable
+export default Request

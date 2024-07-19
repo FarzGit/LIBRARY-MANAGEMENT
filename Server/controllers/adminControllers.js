@@ -3,6 +3,8 @@ import Book from '../models/booksModel.js';
 import Request from '../models/requestModel.js';
 import Admin from '../models/adminModel.js';
 import jwt from 'jsonwebtoken'
+import User from '../models/userModel.js'
+
 
 const postBooks = async (req, res) => { // This is the function for posting new book data
 
@@ -79,7 +81,7 @@ const deleteBooks = async(req,res)=>{// This is the function that is used for de
         }
         const isDeleted = await Book.findByIdAndDelete(id);
         if(isDeleted){
-            res.json({ message: 'Book Deleted Succesfully' });
+            res.status(201).json({ message: 'Book Deleted Succesfully' });
         }
         
     } catch (error) {
@@ -110,17 +112,24 @@ const acceptRequest = async(req,res)=>{ // This function is used for accept the 
 
         const {id} = req.query
 
+        const alreadyAccepted = await Request.findById(id)
+
+        if(alreadyAccepted.status === 'accepted'){
+            return res.status(400).json({ message: 'Already accepted this Book' });
+
+        }
+
         const updatedRequest = await Request.findByIdAndUpdate(
             id,
             { status: 'accepted' },
             { runValidators: true }
         );
 
-        if (!updatedRequest) {
-            return res.status(404).json({ message: 'Request not found' });
+        if (updatedRequest) {
+            res.json({ message: 'Request accepted successfully' });
         }
 
-        res.json({ message: 'Request accepted successfully' });
+        
 
     }catch(error){
         console.log(error);
@@ -157,9 +166,19 @@ const adminLogin = async(req,res)=>{ // This function is login admin with creden
             }
         );
     } catch (error) {
-
         console.log(error)
-        
+        res.status(500).json({message:'Something went wrong'});
+    }
+}
+
+
+const getUsers = async(req,res)=>{ // This is the function for getting users list in the DB
+    try {
+        const users = await User.find().select('-password');
+        res.status(200).json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Something went wrong' });
     }
 }
 
@@ -172,5 +191,6 @@ export {
     deleteBooks,
     getBookRequests,
     acceptRequest,
-    adminLogin
+    adminLogin,
+    getUsers
 }

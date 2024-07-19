@@ -2,10 +2,15 @@
 
 
 
-const ActionsButton = ({ color, label }) => {
+const ActionsButton = ({ color, label,onBorrow }) => {
+    const handleClick = () => {
+        if (window.confirm("Are you sure you want to borrow this book?")) {
+            onBorrow();
+        }
+    };
     return (
         <div>
-            <button className={`p-1 rounded-md text-white font-semibold ${color}`}>
+            <button onClick={handleClick}className={`p-1 rounded-md text-white font-semibold ${color}`}>
                 {label}
             </button>
         </div>

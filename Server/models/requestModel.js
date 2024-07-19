@@ -15,6 +15,10 @@ const RequestSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    userEmail: {
+        type: String,
+        required: true,
+    },
     bookAuthor: {
         type: String,
         required: true,

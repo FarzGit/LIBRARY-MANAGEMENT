@@ -6,17 +6,9 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper
 import Delete from "../../Buttons/delete";
 import { useEffect,useState } from "react";
 import axios from "axios";
+import {toast} from 'react-toastify'
 
 
-// function createData(SlNo, Title, Author, Copies, Status,Action) {
-//     return { SlNo, Title, Author, Copies, Status,Action };
-// }
-
-// const rows = [
-//     createData('Frozen yoghurt', 159, 6.0, 24, 4.0,<Delete />),
-//     createData('Ice cream sandwich', 237, 9.0, 37, 4.3,<Delete/>),
-
-// ];
 
 
 
@@ -40,6 +32,19 @@ const BookTable = () => {
 
 
     }, []);
+
+    const handleDelete = async (id) => {
+        try {
+            const response = await axios.delete(`http://localhost:5000/api/admin/books?id=${id}`);
+
+            if(response){
+                setRows(rows.filter((row) => row._id !== id));
+                toast.success(response.data.message)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
 
   return (
@@ -69,7 +74,7 @@ const BookTable = () => {
                                 <TableCell align="right">{row.author}</TableCell>
                                 <TableCell align="right">{row.copies}</TableCell>
                                 <TableCell align="right">{row.status}</TableCell>
-                                <TableCell align="right"><Delete/></TableCell>
+                                <TableCell align="right"><Delete onDelete={() => handleDelete(row._id)}/></TableCell>
                             </TableRow>
                         ))}
                     </TableBody>

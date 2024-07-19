@@ -1,12 +1,12 @@
 
 import axios from 'axios';
 
-// Create an Axios instance
+
 const api = axios.create({
-    baseURL: '/api', // Base URL of your API
+    baseURL: 'http://localhost:5000/api/users', 
 });
 
-// Add a request interceptor to include the token in headers
+
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -17,6 +17,14 @@ api.interceptors.request.use((config) => {
     return Promise.reject(error);
 });
 
-
+// // Example of a function to fetch user data
+// const fetchUserData = async () => {
+//     try {
+//         const response = await api.get('/user/data');
+//         return response.data;
+//     } catch (error) {
+//         console.error('Error fetching user data:', error);
+//     }
+// };
 
 export default api;

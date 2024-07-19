@@ -4,14 +4,16 @@ import { Typography, Box, Container, List, ListItem, ListItemText, Paper } from 
 import { useState } from "react";
 import BookTable from "../../../components/Admin/Tables/bookTable";
 import AddFrom from "../../../components/Admin/Forms/addFrom";
+import UsersList from "../../../components/Admin/Tables/usersList";
+import Request from "../../../components/Admin/Tables/request";
 
 
 const AdminMain = () => {
     const options = [
          { id: 1, title: 'Books', mainHeading: 'All Books', content: <BookTable /> },
          { id: 2, title: 'Add Books', mainHeading: 'Add New Book', content: <AddFrom /> },
-         { id: 3, title: 'Book Requests', mainHeading: 'Currently Issued Books', content: '<IssuedBookes />' },
-         { id: 3, title: 'Users', mainHeading: 'Currently Issued Books', content: '<IssuedBookes />' },
+         { id: 3, title: 'Book Requests', mainHeading: 'Request From Clients', content: <Request /> },
+         { id: 3, title: 'Users', mainHeading: 'Users List', content: <UsersList /> },
 
      ];
      const [selectedOption, setSelectedOption] = useState(options[0]);
