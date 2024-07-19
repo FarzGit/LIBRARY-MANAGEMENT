@@ -1,21 +1,32 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import ActionsButton from "../Buttons/actionsButton";
-
-
-
-function createData(SlNo, Title, Author, Copies, Status,Action) {
-    return { SlNo, Title, Author, Copies, Status,Action };
-}
-
-const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0,<ActionsButton/>),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3,<ActionsButton/>),
-
-];
-
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const BooksTable = () => {
+
+    const [rows, setRows] = useState([]);
+
+    useEffect(() => {
+
+        const fetchData = async () => {
+            try {
+                const response = await axios.get("http://localhost:5000/api/admin/books")
+                setRows(response.data);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        fetchData()
+
+
+    }, []);
+
+    console.log(rows)
+
+
+
+
     return (
         <>
             <TableContainer component={Paper}>
@@ -31,19 +42,25 @@ const BooksTable = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row) => (
+                        {rows.map((row, index) => (
                             <TableRow
-                                key={row.SlNo}
+                                key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {row.SlNo}
+                                    {index + 1}
                                 </TableCell>
-                                <TableCell align="right">{row.Title}</TableCell>
-                                <TableCell align="right">{row.Author}</TableCell>
-                                <TableCell align="right">{row.Copies}</TableCell>
-                                <TableCell align="right">{row.Status}</TableCell>
-                                <TableCell align="right">{row.Action}</TableCell>
+                                <TableCell align="right">{row.title}</TableCell>
+                                <TableCell align="right">{row.author}</TableCell>
+                                <TableCell align="right">{row.copies}</TableCell>
+                                <TableCell align="right">{row.status}</TableCell>
+                                <TableCell align="right">
+                                    {row.status === "Available" ? (
+                                        <ActionsButton color="bg-[#657de7]" label="Borrow" />
+                                    ) : (
+                                        <ActionsButton color="bg-gray-400" label="Out of Stock" />
+                                    )}
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
