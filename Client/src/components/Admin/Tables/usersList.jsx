@@ -33,9 +33,9 @@ const UsersList = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Sl.no</TableCell>
-                            <TableCell align="right">User Name</TableCell>
-                            <TableCell align="right">User Email</TableCell>
+                            <TableCell sx={{fontWeight: 600}}>Sl.no</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>User Name</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>User Email</TableCell>
                             
                         </TableRow>
                     </TableHead>

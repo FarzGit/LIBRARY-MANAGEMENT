@@ -63,11 +63,11 @@ const Request = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Sl.no</TableCell>
-                            <TableCell align="right">User Email</TableCell>
-                            <TableCell align="right">Book</TableCell>
-                            <TableCell align="right">Author</TableCell>
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell sx={{fontWeight: 600}}>Sl.no</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>User Email</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Book</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Author</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Actions</TableCell>
 
                         </TableRow>
                     </TableHead>

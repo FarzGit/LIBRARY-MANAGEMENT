@@ -4,13 +4,19 @@ import Navbar from '../../../components/navbar';
 import BooksTable from '../../../components/Tables/booksTable';
 import UserProfile from '../../../components/userProfile';
 import IssuedBookes from '../../../components/Tables/issuedBookes';
+import UserSideBar from '../../../components/SideBar/userSideBar';
+import { FaHome } from "react-icons/fa";
+import { TbBooks } from "react-icons/tb";
+import { SiBookstack } from "react-icons/si";
+
+
 
 
 const Home = () => {
     const options = [
-        { id: 1, title: 'Home', mainHeading: 'User Profile', content: <UserProfile /> },
-        { id: 2, title: 'Books', mainHeading: 'All Books', content: <BooksTable /> },
-        { id: 3, title: 'Issued Books', mainHeading: 'Currently Issued Books', content: <IssuedBookes /> },
+        { id: 1, title: <UserSideBar icon={<FaHome />} heading={'Home'}/>, mainHeading: 'User Profile', content: <UserProfile /> },
+        { id: 2, title: <UserSideBar icon={<TbBooks />} heading={'Books'}/>, mainHeading: 'All Books', content: <BooksTable /> },
+        { id: 3, title: <UserSideBar icon={<SiBookstack  />} heading={'Issued Books'}/>, mainHeading: 'Currently Issued Books', content: <IssuedBookes /> },
     ];
     const [selectedOption, setSelectedOption] = useState(options[0]);
     return (

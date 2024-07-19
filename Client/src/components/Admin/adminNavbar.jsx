@@ -1,32 +1,33 @@
-
 import { AppBar, Toolbar, Typography } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom'
 import { FiLogOut } from "react-icons/fi";
+import { clearAdminCredentials } from '../../redux/adminAuthSlice';
 import { useDispatch } from "react-redux";
 import { toast } from 'react-toastify';
-import { clearCredentials } from '../redux/authSlice';
 
 
-const Navbar = () => {
-  const userId = localStorage.getItem('userId')
-    console.log('the userId is :', userId);
+const AdminNavbar = () => {
+
+    const adminId = localStorage.getItem('adminId')
+    console.log('the adminId is :', adminId);
     const dispatch = useDispatch()
     const navigate= useNavigate()
 
     const handleLogOut = ()=>{
         try {
-                dispatch(clearCredentials())
-                navigate('/login')
+                dispatch(clearAdminCredentials())
+                navigate('/admin/login')
                 toast.success('LoggedOut successfully')
             
         } catch (error) {
             console.log(error);
         }
     }
-  return (
-    <>
-      <AppBar position="sticky">
-      <Toolbar
+
+    return (
+        <>
+            <AppBar position="sticky">
+                <Toolbar
                     sx={{
                         backgroundColor: '#fff',
                         display: 'flex',
@@ -35,12 +36,12 @@ const Navbar = () => {
                         alignItems: 'center'
                     }}
                 >
-          <Typography variant="h6" sx={{ color: '#000', fontWeight: 700 }}>
-            LIBRARY MANAGEMENT SYSTEM
-          </Typography>
-          <Typography  >
+                    <Typography variant="h6" sx={{ color: '#000', fontWeight: 700 }}>
+                        LIBRARY MANAGEMENT SYSTEM
+                    </Typography>
+                    <Typography  >
                         <div>
-                            {userId ? (
+                            {adminId ? (
                                 <div className='border-2 rounded-lg ' onClick={handleLogOut}>
 
                                 <Link to='/admin/login' className='flex justify-between items-center gap-2 font-bold text-red-600 px-2' >
@@ -61,12 +62,10 @@ const Navbar = () => {
                         </div>
 
                     </Typography>
-
-        </Toolbar>
-      </AppBar>
-
-    </>
-  )
+                </Toolbar>
+            </AppBar>
+        </>
+    )
 }
 
-export default Navbar
+export default AdminNavbar;

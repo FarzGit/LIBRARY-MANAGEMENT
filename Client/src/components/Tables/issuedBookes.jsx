@@ -44,11 +44,11 @@ const IssuedBookes = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell>Sl.no</TableCell>
-                            <TableCell align="right">Title</TableCell>
-                            <TableCell align="right">Author</TableCell>
-                            <TableCell align="right">Status</TableCell>
-                            <TableCell align="right">Actions</TableCell>
+                            <TableCell sx={{fontWeight: 600}}>Sl.no</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Title</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Author</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Status</TableCell>
+                            <TableCell align="right" sx={{fontWeight: 600}}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>

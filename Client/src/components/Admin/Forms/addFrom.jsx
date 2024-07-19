@@ -85,7 +85,7 @@ const AddFrom = () => {
                         <div className="text-red-500 text-[12px]">{errors.copies}</div>
                     )}
                     <Button type="submit" variant="contained" color="primary">
-                        Add
+                        Add Book
                     </Button>
                 </Stack>
             </form>

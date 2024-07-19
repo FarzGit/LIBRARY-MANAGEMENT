@@ -21,9 +21,7 @@ const UserProfile = () => {
                             <h5 >
                                 <span className="font-semibold">Email : </span>farzinahammed.in@gmail.com
                             </h5>
-                            <h5 >
-                            <span className="font-semibold">Mobile : </span>994371305
-                            </h5>
+                            
                         </div>
                     </div>
                 </div>
