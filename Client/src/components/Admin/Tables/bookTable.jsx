@@ -4,10 +4,10 @@
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import Delete from "../../Buttons/delete";
-import { useEffect,useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import {toast} from 'react-toastify'
-
+import { toast } from 'react-toastify'
+import EditBotton from "../../Buttons/editBotton";
 
 
 
@@ -37,7 +37,7 @@ const BookTable = () => {
         try {
             const response = await axios.delete(`http://localhost:5000/api/admin/books?id=${id}`);
 
-            if(response){
+            if (response) {
                 setRows(rows.filter((row) => row._id !== id));
                 toast.success(response.data.message)
             }
@@ -47,42 +47,51 @@ const BookTable = () => {
     };
 
 
-  return (
-    <>
-     <TableContainer component={Paper}>
+    return (
+        <>
+            <TableContainer component={Paper}>
                 <Table sx={{ minWidth: 650 }} aria-label="simple table">
                     <TableHead>
                         <TableRow>
-                            <TableCell sx={{fontWeight: 600}}>Sl.no</TableCell>
-                            <TableCell align="right" sx={{fontWeight: 600}}>Title</TableCell>
-                            <TableCell align="right" sx={{fontWeight: 600}}>Author</TableCell>
-                            <TableCell align="right" sx={{fontWeight: 600}}>Copies</TableCell>
-                            <TableCell align="right" sx={{fontWeight: 600}}>Status</TableCell>
-                            <TableCell align="right" sx={{fontWeight: 600}}>Actions</TableCell>
+                            <TableCell sx={{ fontWeight: 600 }}>Sl.no</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Title</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Author</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Copies</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Status</TableCell>
+                            <TableCell align="right" sx={{ fontWeight: 600 }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {rows.map((row,index) => (
+                        {rows.map((row, index) => (
                             <TableRow
                                 key={index}
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                {index + 1}
+                                    {index + 1}
                                 </TableCell>
                                 <TableCell align="right">{row.title}</TableCell>
                                 <TableCell align="right">{row.author}</TableCell>
                                 <TableCell align="right">{row.copies}</TableCell>
                                 <TableCell align="right">{row.status}</TableCell>
-                                <TableCell align="right"><Delete onDelete={() => handleDelete(row._id)}/></TableCell>
+                                <TableCell align="right">
+                                    <div className="flex justify-end">
+                                        <div>
+                                            <Delete onDelete={() => handleDelete(row._id)} />
+                                        </div>
+                                        <div>
+                                            <EditBotton />
+                                        </div>
+                                    </div>
+                                </TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
                 </Table>
             </TableContainer>
-    
-    </>
-  )
+
+        </>
+    )
 }
 
 export default BookTable
